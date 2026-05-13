@@ -1,0 +1,12 @@
+{
+  "name": "word-to-pdf-suite",
+  "description": "Word-to-PDF batch converter — skill that converts .doc/.docx files under to-convert-word-files/ to PDFs under converted-pdf-files/ via LibreOffice headless (with pandoc fallback).",
+  "version": "1.0.0",
+  "author": {
+    "name": "Baruchi Halamish"
+  },
+  "homepage": "https://github.com/BaruchiHalamish20/ai-agents",
+  "repository": "https://github.com/BaruchiHalamish20/ai-agents",
+  "license": "MIT",
+  "keywords": ["word", "docx", "pdf", "converter", "documents"]
+}

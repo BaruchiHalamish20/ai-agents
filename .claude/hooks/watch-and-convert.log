@@ -1,0 +1,39 @@
+2026-05-13 12:11:05  watcher armed: word on C:\softech\MaarachHadigital\roi-course\RoiTeachme\work\ai-agents\to-convert-word-files
+2026-05-13 12:11:05  watcher armed: pdf on C:\softech\MaarachHadigital\roi-course\RoiTeachme\work\ai-agents\converted-pdf-files
+2026-05-13 12:11:05  watcher service started (quiet=8s, tick=2s)
+2026-05-13 12:13:29  event Created C:\softech\MaarachHadigital\roi-course\RoiTeachme\work\ai-agents\to-convert-word-files\AI_Architecture_Document-DRAFT.docx
+2026-05-13 12:13:29  event Changed C:\softech\MaarachHadigital\roi-course\RoiTeachme\work\ai-agents\to-convert-word-files\AI_Architecture_Document-DRAFT.docx
+2026-05-13 12:13:29  event Changed C:\softech\MaarachHadigital\roi-course\RoiTeachme\work\ai-agents\to-convert-word-files\AI_Architecture_Document-DRAFT.docx
+2026-05-13 12:13:37  -> firing /word-to-pdf-suite:convert-to-pdf
+2026-05-13 12:19:30  watcher armed: word on C:\softech\MaarachHadigital\roi-course\RoiTeachme\work\ai-agents\to-convert-word-files
+2026-05-13 12:19:30  watcher armed: pdf on C:\softech\MaarachHadigital\roi-course\RoiTeachme\work\ai-agents\converted-pdf-files
+2026-05-13 12:19:30  watcher service started (quiet=8s, tick=2s)
+2026-05-13 16:01:25  event Created C:\softech\MaarachHadigital\roi-course\RoiTeachme\work\ai-agents\to-convert-word-files\Google certifications master document.docx
+2026-05-13 16:01:25  event Changed C:\softech\MaarachHadigital\roi-course\RoiTeachme\work\ai-agents\to-convert-word-files\Google certifications master document.docx
+2026-05-13 16:01:25  event Changed C:\softech\MaarachHadigital\roi-course\RoiTeachme\work\ai-agents\to-convert-word-files\Google certifications master document.docx
+2026-05-13 16:01:33  -> firing /word-to-pdf-suite:convert-to-pdf
+2026-05-13 16:03:12  event Created C:\softech\MaarachHadigital\roi-course\RoiTeachme\work\ai-agents\to-convert-word-files\GCP Architecture Questions and Answers.docx
+2026-05-13 16:03:12  event Changed C:\softech\MaarachHadigital\roi-course\RoiTeachme\work\ai-agents\to-convert-word-files\GCP Architecture Questions and Answers.docx
+2026-05-13 16:03:12  event Changed C:\softech\MaarachHadigital\roi-course\RoiTeachme\work\ai-agents\to-convert-word-files\GCP Architecture Questions and Answers.docx
+2026-05-13 16:03:12  <- done /word-to-pdf-suite:convert-to-pdf (exit=0)
+2026-05-13 16:03:12  event Created C:\softech\MaarachHadigital\roi-course\RoiTeachme\work\ai-agents\converted-pdf-files\GCP Architecture Questions and Answers.pdf
+2026-05-13 16:03:12  event Changed C:\softech\MaarachHadigital\roi-course\RoiTeachme\work\ai-agents\converted-pdf-files\GCP Architecture Questions and Answers.pdf
+2026-05-13 16:03:12  event Created C:\softech\MaarachHadigital\roi-course\RoiTeachme\work\ai-agents\converted-pdf-files\Google certifications master document.pdf
+2026-05-13 16:03:12  event Changed C:\softech\MaarachHadigital\roi-course\RoiTeachme\work\ai-agents\converted-pdf-files\Google certifications master document.pdf
+2026-05-13 16:03:12     Conversion complete — 2 converted, 0 failed (out of 2 pending). Up-to-date files skipped: 0.
+2026-05-13 16:03:12     
+2026-05-13 16:03:12     - ✓ `to-convert-word-files/GCP Architecture Questions and Answers.docx` → `converted-pdf-files/GCP Architecture Questions and Answers.pdf`
+2026-05-13 16:03:12     - ✓ `to-convert-word-files/Google certifications master document.docx` → `converted-pdf-files/Google certifications master document.pdf`
+2026-05-13 16:03:20  -> firing /word-to-pdf-suite:convert-to-pdf
+2026-05-13 16:04:07  <- done /word-to-pdf-suite:convert-to-pdf (exit=0)
+2026-05-13 16:04:07     Both files are already up-to-date — the PDFs are newer than the source Word documents.
+2026-05-13 16:04:07     
+2026-05-13 16:04:07     **Conversion queue: 0 pending, 2 up-to-date.**
+2026-05-13 16:04:07     
+2026-05-13 16:04:07     | Source | Destination | Status |
+2026-05-13 16:04:07     |---|---|---|
+2026-05-13 16:04:07     | `to-convert-word-files/GCP Architecture Questions and Answers.docx` | `converted-pdf-files/GCP Architecture Questions and Answers.pdf` | up-to-date |
+2026-05-13 16:04:07     | `to-convert-word-files/Google certifications master document.docx` | `converted-pdf-files/Google certifications master document.pdf` | up-to-date |
+2026-05-13 16:04:07     
+2026-05-13 16:04:07     Nothing to convert. All PDFs are current.
+2026-05-13 16:04:07  -> firing /markdown-converter-suite:convert-to-md

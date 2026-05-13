@@ -1,0 +1,21 @@
+{
+  "name": "pikud-alerts-suite",
+  "description": "Pikud HaOref alert workflow — agent, skill, and SessionStart hook bundled. Fetches Israeli Home Front Command alerts and produces bilingual Markdown reports under reports/.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Baruchi Halamish"
+  },
+  "homepage": "https://github.com/BaruchiHalamish20/ai-agents",
+  "repository": "https://github.com/BaruchiHalamish20/ai-agents",
+  "license": "MIT",
+  "keywords": ["pikud-haoref", "alerts", "israel", "monitoring"],
+  "userConfig": {
+    "default_region": {
+      "type": "string",
+      "title": "Default region filter",
+      "description": "Hebrew substring applied to area names when /alert-report is called with no region argument. Leave empty to mean 'no filter — show all areas'. Example: מנרה (matches קיבוץ מנרה), חוף (matches any beach area).",
+      "required": false,
+      "default": ""
+    }
+  }
+}

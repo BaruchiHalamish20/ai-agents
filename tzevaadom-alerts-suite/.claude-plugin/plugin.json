@@ -1,0 +1,12 @@
+{
+  "name": "tzevaadom-alerts-suite",
+  "description": "TzevaAdom community alert workflow — agent, skill, and SessionStart hook bundled. Fetches Israeli rocket/siren alerts from api.tzevaadom.co.il and produces bilingual Markdown reports under reports/tzevaadom/.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Baruchi Halamish"
+  },
+  "homepage": "https://github.com/BaruchiHalamish20/ai-agents",
+  "repository": "https://github.com/BaruchiHalamish20/ai-agents",
+  "license": "MIT",
+  "keywords": ["tzevaadom", "alerts", "israel", "monitoring", "community"]
+}

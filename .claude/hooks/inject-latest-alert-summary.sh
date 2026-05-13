@@ -3,7 +3,9 @@
 # additionalContext for Claude to load at session start.
 set -euo pipefail
 
-echo "$(date -Iseconds) inject-latest-alert-summary fired" >> .claude/hooks/.audit.log
+mkdir -p "${CLAUDE_PLUGIN_DATA:-.}"
+echo "$(date -Iseconds) inject-latest-alert-summary fired" \
+  >> "${CLAUDE_PLUGIN_DATA:-.}/audit.log"
 
 LATEST="$(ls -t reports/*.md 2>/dev/null | head -n1 || true)"
 if [[ -z "${LATEST}" ]]; then

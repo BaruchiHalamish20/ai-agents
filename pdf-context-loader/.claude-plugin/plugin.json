@@ -1,0 +1,8 @@
+{
+  "name": "pdf-context-loader",
+  "description": "Convert a PDF to a Markdown sibling file and load the content into the conversation context. Uses Claude Code's native PDF Read support — no external binaries.",
+  "version": "1.0.0",
+  "author": { "name": "Baruchi Halamish" },
+  "license": "MIT",
+  "keywords": ["pdf", "context", "markdown", "rag-prep"]
+}

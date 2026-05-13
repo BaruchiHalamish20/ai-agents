@@ -10,8 +10,9 @@
 >
 > **Time:** ~45 minutes.
 > **You will touch:** `.claude/settings.json` (or `~/.claude/settings.json`),
-> a small shell script under `.claude/hooks/`, and the `/schedule` /
-> `/loop` slash commands. Optionally `reports/` if you check artifacts.
+> a small shell script under `.claude/hooks/`, `.gitignore` (one line for
+> the hook's audit log), and the `/schedule` / `/loop` slash commands.
+> Optionally `reports/` if you check artifacts.
 >
 > **Source of truth:**
 > - Hooks — <https://code.claude.com/docs/en/hooks.md>
@@ -146,22 +147,66 @@ Create `.claude/hooks/inject-latest-alert-summary.sh`:
 # additionalContext for Claude to load at session start.
 set -euo pipefail
 
+echo "$(date -Iseconds) inject-latest-alert-summary fired" >> .claude/hooks/.audit.log
+
 LATEST="$(ls -t reports/*.md 2>/dev/null | head -n1 || true)"
 if [[ -z "${LATEST}" ]]; then
-  printf '{"hookSpecificOutput":{"additionalContext":"No prior alert reports found under reports/."}}\n'
+  printf '{"hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"No prior alert reports found under reports/."}}\n'
   exit 0
 fi
 
+MTIME="$(date -r "${LATEST}" -Iseconds 2>/dev/null || stat -c '%y' "${LATEST}" 2>/dev/null || echo unknown)"
+
 # Extract the "## Summary" section (between "## Summary" and the next H2).
 SUMMARY="$(awk '/^## Summary/{flag=1; next} /^## /{flag=0} flag' "${LATEST}")"
-PAYLOAD="Latest report: ${LATEST}\n\nSummary:\n${SUMMARY}"
 
-# Emit JSON. jq would be cleaner; using printf to keep deps to bash + coreutils.
-printf '{"hookSpecificOutput":{"additionalContext":%s}}\n' \
-  "$(printf '%s' "${PAYLOAD}" | python3 -c 'import json,sys; print(json.dumps(sys.stdin.read()))')"
+PAYLOAD="A Pikud HaOref alert report was generated at ${MTIME}.
+File: ${LATEST}
+
+Summary:
+${SUMMARY}
+
+Instructions for Claude:
+- When the user asks about current/recent alert state, answer from the summary above.
+- Do NOT invoke the /alert-report skill or the pikud-alerts agent unless the user explicitly asks for fresh data, a new time window, or a region filter, or if the timestamp above is older than 6 hours relative to the current Israel local time."
+
+printf '{"hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":%s}}\n' \
+  "$(printf '%s' "${PAYLOAD}" | jq -Rs '.')"
 ```
 
 Make it executable: `chmod +x .claude/hooks/inject-latest-alert-summary.sh`.
+
+Add the audit log to `.gitignore` so it doesn't get committed:
+
+```
+.claude/hooks/.audit.log
+```
+
+#### Why this shape — four things worth pausing on
+
+1. **`jq -Rs '.'` for JSON encoding.** `jq` is already a sane dev-machine
+   dependency (you used it in Task 3 to inspect output), so reusing it
+   for the encoding side keeps the script free of Python and avoids the
+   awkward `printf` quoting dance. `-R` reads raw input (no JSON
+   parsing), `-s` slurps all stdin into a single string, `.` emits it
+   as a properly-escaped JSON string literal.
+2. **`hookEventName` in the response.** The `hookSpecificOutput` block's
+   schema is event-specific, so the response must identify which event
+   it's responding to. Omitting `hookEventName` is a silent
+   misconfiguration — the harness may discard your `additionalContext`
+   without an obvious error.
+3. **The audit log.** Hooks run silently — there is no built-in
+   per-fire log you can grep. A single `>> .audit.log` line gives you
+   an immutable "did this hook actually fire?" signal you can inspect
+   independently of Claude Code's own logging. Worth a few cents of
+   disk; saves hours of "I think the hook is broken" debugging.
+4. **Behavioral guidance, not just data.** The payload doesn't only
+   inject the summary — it also tells Claude *when not to refetch*
+   ("don't invoke the skill unless the user asks for fresh data or
+   the timestamp is over 6 hours old"). Without that, Claude's default
+   behavior on "what's the alert state?" is to invoke the skill and
+   re-fetch — defeating the point of the hook. A hook that injects
+   data without the corresponding behavioral guidance is half a hook.
 
 ### Task 2 — Wire the hook in `settings.json`
 
@@ -192,9 +237,25 @@ session). In your first message, ask:
 > "What's the current alert state?"
 
 Claude should answer with a summary that came from the latest report
-*without* you naming the file. If it doesn't, run the script directly
-to confirm it produces valid JSON (`bash .claude/hooks/inject-latest-alert-summary.sh | jq .`),
-then check `claude --debug` output for hook errors.
+*without* you naming the file. It should also **not** invoke
+`/alert-report` or the `pikud-alerts` agent — the behavioral guidance
+in the payload tells it to answer from the injected summary unless the
+report is stale.
+
+Three independent debug signals if it doesn't work:
+
+1. **Does the hook fire at all?** Tail the audit log:
+   `tail -n 5 .claude/hooks/.audit.log`. One new ISO timestamp per
+   session start. If empty, the hook isn't wired or the script isn't
+   executable.
+2. **Does the script produce valid JSON?**
+   `bash .claude/hooks/inject-latest-alert-summary.sh | jq .` — should
+   print a parsed object with `hookSpecificOutput.hookEventName` and
+   `hookSpecificOutput.additionalContext`. A `jq` parse error here
+   means the script is broken; fix that before anything else.
+3. **Does Claude Code accept the response?** Run with `claude --debug`
+   and look for `additionalContext` being injected (or rejected with a
+   schema error — usually a missing `hookEventName`).
 
 ### Task 4 — Create the hourly routine
 
@@ -235,13 +296,199 @@ enough. The loop expires automatically after 7 days even if you forget.
 
 ---
 
-## 5. Verification checklist
+## 5. Managing routines beyond `/schedule`
+
+Task 4 used `/schedule` because it's the lowest-friction path inside Claude
+Code. It's not the only path. Routines are server-side objects in your
+claude.ai account — anything that can talk HTTP to claude.ai can manage
+them. There are three management surfaces, all backed by the same
+database:
+
+| Path | When to reach for it | Auth |
+|---|---|---|
+| **Web UI** — <https://claude.ai/code/routines> | One-off changes; you want to *see* the routine you're editing | Browser session |
+| **`/schedule`** inside Claude Code | Conversational create / list / update / run; you're already in a session | CLI auth (OAuth or API key) |
+| **HTTP API** — `https://claude.ai/api/code/triggers` | Scripting, CI, "routines as code" | claude.ai session cookie or OAuth token |
+
+The mechanic of routines created here is identical no matter the path.
+A routine made via `/schedule` is editable in the web UI; a routine made
+via `curl` is listable from `/schedule list`. There is no separate
+"API routine" type — only one routine type, three doors.
+
+### 5.1. The web UI
+
+Open <https://claude.ai/code/routines> → **New routine**. The form asks
+for the same fields the API does: name, cron, repo, prompt, model,
+optional MCP connectors. Save and the routine is live. Use this when
+you want to *see* the shape of a routine while editing it — the form
+validates cron expressions and surfaces enabled/next-run state more
+clearly than a curl response.
+
+### 5.2. Finding your `sessionKey` cookie
+
+The API authenticates browser-style: a `Cookie: sessionKey=…` header.
+You copy that value from your logged-in browser session. There is no
+separate "create an API key for claude.ai" step — the cookie *is* the
+credential.
+
+**Chrome / Edge:**
+
+1. Open <https://claude.ai/> in your normal browser, signed in as the
+   account that owns the routines.
+2. Press **F12** → **Application** tab → **Storage** → **Cookies** →
+   `https://claude.ai`.
+3. Find the row whose Name column is **`sessionKey`**. Copy its
+   **Value** column (it'll be a long opaque string).
+
+**Firefox:**
+
+1. Same URL, signed in.
+2. **F12** → **Storage** tab → **Cookies** → `https://claude.ai`.
+3. Click the `sessionKey` row → copy the value field.
+
+**From the on-disk cookie store (alternative, rarely worth it):**
+
+| Browser | Windows | macOS | Linux |
+|---|---|---|---|
+| Chrome | `%LOCALAPPDATA%\Google\Chrome\User Data\Default\Network\Cookies` | `~/Library/Application Support/Google/Chrome/Default/Cookies` | `~/.config/google-chrome/Default/Cookies` |
+| Edge | `%LOCALAPPDATA%\Microsoft\Edge\User Data\Default\Network\Cookies` | `~/Library/Application Support/Microsoft Edge/Default/Cookies` | `~/.config/microsoft-edge/Default/Cookies` |
+| Firefox | `%APPDATA%\Mozilla\Firefox\Profiles\<profile>\cookies.sqlite` | `~/Library/Application Support/Firefox/Profiles/<profile>/cookies.sqlite` | `~/.mozilla/firefox/<profile>/cookies.sqlite` |
+
+Both files are SQLite databases. Chrome/Edge encrypt the `value` column
+with DPAPI (Windows) or Keychain (macOS), so reading it from disk
+requires platform-specific decryption — usually not worth the effort
+versus a 5-second copy from DevTools. Firefox stores cookie values in
+plaintext in `moz_cookies`.
+
+**Treat the cookie like a password.** Anyone holding it can act as you
+on claude.ai until it expires.
+
+- Never commit it to git. Never paste it in chat, a screenshot, a
+  shared doc, or a CI log.
+- If you have to put it in an env var, scope it to the current shell
+  only (`export SESSION_KEY=...` then `unset SESSION_KEY` when done).
+- Rotate immediately on suspected leak: sign out of all claude.ai
+  sessions from <https://claude.ai/settings/account>, then sign back
+  in. Old cookies are invalidated.
+- For long-lived automation (CI, cron on a server), prefer a Claude
+  Code OAuth token over the session cookie — tokens are revocable
+  per-device from the account settings; the session cookie is not.
+
+### 5.3. Calling the API with `curl`
+
+Endpoint base: `https://claude.ai/api/code/triggers`.
+
+| Method | Path | Action |
+|---|---|---|
+| `GET`  | `/api/code/triggers` | List all routines |
+| `GET`  | `/api/code/triggers/{id}` | Fetch one |
+| `POST` | `/api/code/triggers` | Create (body required) |
+| `POST` | `/api/code/triggers/{id}` | Update (partial body) |
+| `POST` | `/api/code/triggers/{id}/run` | Trigger an immediate run |
+
+Deletion is **web UI only** — there is no `DELETE` endpoint.
+
+Create the same hourly digest from Task 4 with `curl`:
+
+```bash
+SESSION_KEY="<paste value from DevTools>"
+REPO="https://github.com/<you>/ai-agents"
+ENV_ID="env_011CUZPQ9mczgxzSjjw36rjS"   # from /schedule's environment list
+
+curl -sX POST https://claude.ai/api/code/triggers \
+  -H "Content-Type: application/json" \
+  -H "Cookie: sessionKey=${SESSION_KEY}" \
+  -d '{
+    "name": "pikud-hourly-digest",
+    "cron_expression": "0 * * * *",
+    "enabled": true,
+    "job_config": {
+      "ccr": {
+        "environment_id": "'"${ENV_ID}"'",
+        "session_context": {
+          "model": "claude-haiku-4-5",
+          "sources": [{"git_repository": {"url": "'"${REPO}"'"}}],
+          "allowed_tools": ["Bash","Read","Write","Edit","Glob","Grep"]
+        },
+        "events": [{
+          "data": {
+            "uuid": "'"$(uuidgen | tr "[:upper:]" "[:lower:]")"'",
+            "session_id": "",
+            "type": "user",
+            "parent_tool_use_id": null,
+            "message": {
+              "role": "user",
+              "content": "Run /alert-report 24 in this repo. Write the report to reports/ and return the path."
+            }
+          }
+        }]
+      }
+    }
+  }' | jq .
+```
+
+The response includes the new routine's `id`. From there:
+
+```bash
+# List
+curl -s -H "Cookie: sessionKey=${SESSION_KEY}" \
+  https://claude.ai/api/code/triggers | jq '.data[] | {id, name, cron_expression, enabled, next_run_at}'
+
+# Run now
+curl -sX POST -H "Cookie: sessionKey=${SESSION_KEY}" \
+  https://claude.ai/api/code/triggers/<id>/run
+
+# Disable
+curl -sX POST -H "Cookie: sessionKey=${SESSION_KEY}" \
+  -H "Content-Type: application/json" \
+  -d '{"enabled": false}' \
+  https://claude.ai/api/code/triggers/<id>
+```
+
+**Rules the API will enforce — write them on the wall:**
+
+- **Cron is always UTC.** Convert from your local time yourself. The
+  API will not reinterpret your expression.
+- **Minimum interval is 1 hour.** `*/30 * * * *` is rejected.
+- **One-off run:** swap `cron_expression` for
+  `"run_once_at": "YYYY-MM-DDTHH:MM:SSZ"` (RFC3339 UTC, must be in the
+  future). Fires once, then auto-disables.
+- **Fresh UUIDv4 per create.** `events[].data.uuid` must be a
+  lowercase v4 — generate one each time. Reusing a UUID across creates
+  is undefined behavior.
+- **Sandbox is stateless.** Every run starts a fresh checkout, no
+  memory of previous runs. Anything you want to persist must be
+  written to a commit, a PR, or an external channel inside the run.
+
+### 5.4. When to prefer which path
+
+| Situation | Use |
+|---|---|
+| You're already in a Claude Code session and want to create or tweak one routine | `/schedule` |
+| You want to see / sort / disable a few routines visually | Web UI |
+| You want a routine definition checked into git (IaC) and applied from CI | API + `curl` (or a thin wrapper script) |
+| You're rotating a routine's prompt every week from a script | API |
+| You need to delete a routine | Web UI (only option) |
+
+The API path is the only one that lets you treat routines as code. If
+you ever find yourself recreating the same routine across machines,
+people, or accounts, write the JSON body once, check it into the repo,
+and `curl` it in — it's the SDD treatment for routines themselves.
+
+---
+
+## 6. Verification checklist
 
 - [ ] `.claude/hooks/inject-latest-alert-summary.sh` is executable and
-      produces valid JSON when run standalone.
+      produces valid JSON when run standalone (`bash <script> | jq .`
+      parses cleanly and includes both `hookEventName` and
+      `additionalContext`).
 - [ ] `.claude/settings.json` contains a `SessionStart` hook entry.
+- [ ] `.claude/hooks/.audit.log` is listed in `.gitignore` and gains a
+      new line every time a session starts.
 - [ ] A fresh session opens with Claude already aware of the latest
-      report's summary, without prompting.
+      report's summary, without prompting — and **without** invoking
+      `/alert-report` or the `pikud-alerts` agent.
 - [ ] `/schedule list` shows `pikud-hourly-digest` with cron `0 * * * *`.
 - [ ] After the next hour boundary, `reports/` has a new file from the
       routine (timestamp ~ top of the hour).
@@ -253,7 +500,7 @@ enough. The loop expires automatically after 7 days even if you forget.
 
 ---
 
-## 6. Stretch (optional)
+## 7. Stretch (optional)
 
 Pick one before declaring the trilogy complete:
 

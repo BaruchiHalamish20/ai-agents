@@ -1,0 +1,38 @@
+{
+  "name": "ai-agents-local",
+  "owner": {
+    "name": "Baruchi Halamish",
+    "email": "bhalamish20@gmail.com"
+  },
+  "description": "Local development marketplace for the RoiTeachme AI-agents course. Three plugins covering Pikud HaOref alerts (oref.org.il), Tzeva Adom alerts, and PDF→Markdown conversion.",
+  "plugins": [
+    {
+      "name": "pikud-alerts-suite",
+      "source": "./pikud-alerts-suite",
+      "description": "Pikud HaOref alert workflow — agent + skill + SessionStart hook + cross-plugin reports/ guardrail.",
+      "version": "1.0.0",
+      "keywords": ["pikud-haoref", "alerts", "israel"]
+    },
+    {
+      "name": "tzevaadom-alerts-suite",
+      "source": "./tzevaadom-alerts-suite",
+      "description": "Tzeva Adom alert workflow — alternative alert source bundled identically to pikud-alerts-suite.",
+      "version": "1.0.0",
+      "keywords": ["tzeva-adom", "alerts", "israel"]
+    },
+    {
+      "name": "markdown-converter-suite",
+      "source": "./markdown-converter-suite",
+      "description": "PDF → Markdown conversion plugin with SessionStart conversion-queue notification.",
+      "version": "1.0.0",
+      "keywords": ["pdf", "markdown", "context", "rag-prep"]
+    },
+    {
+      "name": "word-to-pdf-suite",
+      "source": "./word-to-pdf-suite",
+      "description": "Word (.doc/.docx) to PDF batch converter — skill that drives LibreOffice headless (with pandoc fallback) over to-convert-word-files/.",
+      "version": "1.0.0",
+      "keywords": ["word", "pdf", "batch-convert"]
+    }
+  ]
+}

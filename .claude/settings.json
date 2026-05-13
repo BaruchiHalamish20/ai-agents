@@ -10,5 +10,11 @@
         ]
       }
     ]
-  }
+  },
+  "enabledPlugins": {
+    "pikud-alerts-suite@ai-agents-local": true,
+    "tzevaadom-alerts-suite@ai-agents-local": true,
+    "word-to-pdf-suite@ai-agents-local": true
+  },
+  "extraKnownMarketplaces": {}
 }

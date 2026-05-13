@@ -3,7 +3,7 @@ name: alert-report
 description: Fetch Pikud HaOref (Israeli Home Front Command) alerts and write a bilingual Markdown report under reports/. Args — hours (integer, default 24), region (Hebrew substring filter on area names), and an optional --debug flag.
 argument-hint: "[hours] [region] [--debug]"
 arguments: [hours, region]
-allowed-tools: WebFetch, Read, Write, Glob
+allowed-tools: WebFetch, Bash, Read, Write, Glob
 ---
 
 # `/alert-report` — Pikud HaOref alert report skill
@@ -129,8 +129,52 @@ error. A bad arg never produces a half-built report.
    - `https://www.oref.org.il/WarningMessages/History/AlertsHistory.json`
      — returns HTTP 403 to programmatic clients.
 
-If the live + history-AJAX endpoints both fail, do not invent data. Write
-the report anyway, with a clear "Data unavailable — reason: …" section.
+### Fetching with browser headers (mandatory fallback on 403)
+
+Some clients — notably the Anthropic cloud sandbox used by `/schedule`
+routines — receive `HTTP 403 Forbidden` from `oref.org.il` when fetching
+via plain `WebFetch`. Two root causes are possible: (a) **User-Agent /
+Origin filtering** on the CDN, or (b) **geo-blocking** of non-IL egress
+IPs. We can't tell which one applies without probing. So every fetch in
+this skill follows a two-step pattern:
+
+1. **First attempt:** `WebFetch` against the URL.
+2. **If, and only if, the response is `403 Forbidden`** — retry via
+   `Bash` + `curl` with a full browser-style header set:
+
+   ```bash
+   curl -sS -o /tmp/oref-resp.bin -w '%{http_code}\n' \
+     -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36" \
+     -H "Accept: application/json, text/javascript, */*; q=0.01" \
+     -H "Accept-Language: he-IL,he;q=0.9,en-US;q=0.8,en;q=0.7" \
+     -H "Referer: https://www.oref.org.il/" \
+     -H "Origin: https://www.oref.org.il" \
+     -H "X-Requested-With: XMLHttpRequest" \
+     "$URL"
+   # Body is in /tmp/oref-resp.bin; status code is the captured stdout.
+   ```
+
+   `X-Requested-With: XMLHttpRequest` is specifically needed by the
+   history AJAX endpoint; the live JSON endpoint tolerates it.
+
+3. **Interpreting the probe result:**
+   - **WebFetch 403 → curl 200** → root cause was header/WAF filtering.
+     Proceed with the curl-fetched body as the canonical response.
+   - **WebFetch 403 → curl 403** → root cause is geo-blocking
+     (or a deeper IP allowlist). No header set can fix this from outside
+     Israel. Skip to the next endpoint and, if all are blocked, emit the
+     "Data unavailable" report.
+
+The fallback is a **probe**, not a permanent transport — call it only on
+the 403 path, not on every fetch. WebFetch is preferred when it works
+because its outputs already flow through Claude Code's content
+extraction; curl returns raw bytes that the skill has to parse itself.
+
+If both the live and history-AJAX endpoints fail after this two-step
+probe, do not invent data. Write the report anyway, with a clear
+"Data unavailable — reason: …" section that **names which step failed
+for each endpoint** (WebFetch 403, curl 403, curl-non-200, parse error,
+etc.) so the diagnosis is in the report itself.
 
 ---
 
@@ -187,7 +231,8 @@ event:
    system context, or "unknown — date-only fallback").
 3. **Computed window** — `cutoff` and `now` as full timestamps, plus
    `fromDate`/`toDate` used for the history query.
-4. **Each WebFetch call** — URL, HTTP status, body size in bytes (or
+4. **Each fetch attempt** — tool used (`WebFetch` or `curl+headers`),
+   URL, HTTP status, body size in bytes (or
    "empty" / "error: …"), parsed result (e.g. "0 active alerts", "47
    history rows").
 5. **Parse decisions** — for each response: format detected
