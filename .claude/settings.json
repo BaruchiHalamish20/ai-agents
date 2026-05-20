@@ -11,10 +11,18 @@
       }
     ]
   },
+  "extraKnownMarketplaces": {
+    "ai-agents-local": {
+      "source": {
+        "source": "directory",
+        "path": "."
+      }
+    }
+  },
   "enabledPlugins": {
     "pikud-alerts-suite@ai-agents-local": true,
     "tzevaadom-alerts-suite@ai-agents-local": true,
+    "markdown-converter-suite@ai-agents-local": true,
     "word-to-pdf-suite@ai-agents-local": true
-  },
-  "extraKnownMarketplaces": {}
+  }
 }

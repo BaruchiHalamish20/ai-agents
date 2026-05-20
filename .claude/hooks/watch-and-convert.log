@@ -37,3 +37,31 @@
 2026-05-13 16:04:07     
 2026-05-13 16:04:07     Nothing to convert. All PDFs are current.
 2026-05-13 16:04:07  -> firing /markdown-converter-suite:convert-to-md
+2026-05-13 16:10:46  <- done /markdown-converter-suite:convert-to-md (exit=0)
+2026-05-13 16:10:46     The rate limit applies across models. Here's the current status:
+2026-05-13 16:10:46     
+2026-05-13 16:10:46     ---
+2026-05-13 16:10:46     
+2026-05-13 16:10:46     **Conversion complete — 1 converted, 1 failed (out of 2 pending).**
+2026-05-13 16:10:46     Up-to-date files skipped: 2.
+2026-05-13 16:10:46     
+2026-05-13 16:10:46     ✓ `converted-pdf-files/GCP Architecture Questions and Answers.pdf` → `converted-md-files/GCP Architecture Questions and Answers.md`
+2026-05-13 16:10:46       Summary: GCP Professional Cloud Architect exam prep guide — 19 multiple-choice questions with answers, explanations, reference links, and networking resilience study notes.
+2026-05-13 16:10:46       H1=1, H2=2, tables=4, images=0
+2026-05-13 16:10:46     
+2026-05-13 16:10:46     ✗ `converted-pdf-files/Google certifications master document.pdf` → conversion failed: API rate limit reached (repeated attempts). Re-run `/convert-to-md` later to pick up this file.
+2026-05-19 09:05:01  watcher armed: word on C:\softech\MaarachHadigital\roi-course\RoiTeachme\work\ai-agents\to-convert-word-files
+2026-05-19 09:05:01  watcher armed: pdf on C:\softech\MaarachHadigital\roi-course\RoiTeachme\work\ai-agents\converted-pdf-files
+2026-05-19 09:05:01  watcher service started (quiet=8s, tick=2s)
+2026-05-19 10:11:47  watcher armed: word on C:\softech\MaarachHadigital\roi-course\RoiTeachme\work\ai-agents\to-convert-word-files
+2026-05-19 10:11:47  watcher armed: pdf on C:\softech\MaarachHadigital\roi-course\RoiTeachme\work\ai-agents\converted-pdf-files
+2026-05-19 10:11:47  watcher service started (quiet=8s, tick=2s)
+2026-05-19 10:53:17  watcher armed: word on C:\softech\MaarachHadigital\roi-course\RoiTeachme\work\ai-agents\to-convert-word-files
+2026-05-19 10:53:17  watcher armed: pdf on C:\softech\MaarachHadigital\roi-course\RoiTeachme\work\ai-agents\converted-pdf-files
+2026-05-19 10:53:17  watcher service started (quiet=8s, tick=2s)
+2026-05-19 13:25:48  watcher armed: word on C:\softech\MaarachHadigital\roi-course\RoiTeachme\work\ai-agents\to-convert-word-files
+2026-05-19 13:25:48  watcher armed: pdf on C:\softech\MaarachHadigital\roi-course\RoiTeachme\work\ai-agents\converted-pdf-files
+2026-05-19 13:25:48  watcher service started (quiet=8s, tick=2s)
+2026-05-19 17:14:26  watcher armed: word on C:\softech\MaarachHadigital\roi-course\RoiTeachme\work\ai-agents\to-convert-word-files
+2026-05-19 17:14:26  watcher armed: pdf on C:\softech\MaarachHadigital\roi-course\RoiTeachme\work\ai-agents\converted-pdf-files
+2026-05-19 17:14:26  watcher service started (quiet=8s, tick=2s)
