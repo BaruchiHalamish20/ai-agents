@@ -170,13 +170,14 @@ emits a Sources section in every report (passes).
 
 ---
 
-## Audit — current catalog (as of <today's date>)
+## Audit — current catalog (as of 25.5.2026)
 
 | Plugin                     | Articles passing | Documented deviations                          | Must-fix                   |
 |----------------------------|------------------|------------------------------------------------|----------------------------|
 | `pikud-alerts-suite`       | I, II, III, IV, V, VI, VII | Article V — cross-plugin guardrail documented in README | — |
-| `tzevaadom-alerts-suite`   | (to be audited)  | (to be audited)                                | (to be audited)            |
-| `markdown-converter-suite` | (to be audited)  | (to be audited)                                | (to be audited)            |
+| `tzevaadom-alerts-suite`   | I, II, III, IV, V, VI, VII | —                                              |      |
+| `markdown-suite`           | I, II, III, IV, V, VI, VII | —                                              |      |
+| `word-to-pdf-suite`        | I, II, III, IV, V, VI, VII | —                                              |      |
 
 Future audits SHOULD be appended to this table, not overwritten —
 constitutional compliance is a journal, not a snapshot.

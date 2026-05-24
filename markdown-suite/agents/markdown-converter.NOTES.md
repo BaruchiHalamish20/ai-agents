@@ -2,7 +2,7 @@
 
 This file is **not** loaded by Claude Code as an agent (filename does
 not match `<name>.md`). It exists to document temporary, hand-applied
-edits to `markdown-converter-suite/agents/markdown-converter.md` so
+edits to `markdown-suite/agents/markdown-converter.md` so
 that:
 
 1. A reviewer reading the agent file knows where to look for any
@@ -23,7 +23,7 @@ Copy the template below to the top of the dated-entries section.
 ```markdown
 ## YYYY-MM-DD — <one-line title>
 
-- **Target file:** `markdown-converter-suite/agents/markdown-converter.md`
+- **Target file:** `markdown-suite/agents/markdown-converter.md`
 - **Section:** <name of the H2/H3 section in the agent body>
 - **Approximate line:** <N> (search for `<unique substring>`)
 

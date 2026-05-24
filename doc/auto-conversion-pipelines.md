@@ -5,7 +5,7 @@ This project has two conversion skills:
 | Source folder              | Skill                                        | Output folder           |
 |----------------------------|----------------------------------------------|-------------------------|
 | `to-convert-word-files/`   | `/word-to-pdf-suite:convert-to-pdf`          | `converted-pdf-files/`  |
-| `converted-pdf-files/`     | `/markdown-converter-suite:convert-to-md`    | `converted-md-files/`   |
+| `converted-pdf-files/`     | `/markdown-suite:convert-to-md`    | `converted-md-files/`   |
 
 Drop a `.docx` and you eventually want a `.md`. The two skills already
 chain (PDFs land in the second skill's source folder), so the question
@@ -338,7 +338,7 @@ Then create a routine that runs both skills every 5 minutes:
 Create a routine named "watch-and-convert" that runs every 5 minutes
 and executes:
   /word-to-pdf-suite:convert-to-pdf
-  /markdown-converter-suite:convert-to-md
+  /markdown-suite:convert-to-md
 ```
 
 The `/schedule` skill builds a cron entry that fires a fresh Claude

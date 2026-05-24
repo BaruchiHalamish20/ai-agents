@@ -29,7 +29,7 @@ But this choice has a real cost — see *"The coupling risk"* below.
 The model:
 
 1. At session start (and on `/reload-plugins`), every enabled plugin's `hooks.json` registers as a **subscription** to its declared events (`PreToolUse`, `SessionStart`, etc.).
-2. When *anything* triggers a `PreToolUse` event — main Claude, a routine, a `/loop`, a sub-agent invoked by `tzevaadom-alerts-suite`, even a skill from `markdown-converter-suite` — the harness consults *all* active subscriptions and runs every matching script.
+2. When *anything* triggers a `PreToolUse` event — main Claude, a routine, a `/loop`, a sub-agent invoked by `tzevaadom-alerts-suite`, even a skill from `markdown-suite` — the harness consults *all* active subscriptions and runs every matching script.
 3. The hook script receives a generic payload: `tool_name`, `tool_input`. It has no field telling it which plugin (or whether any plugin at all) initiated the call — and it doesn't need one.
 
 Concretely:
@@ -41,7 +41,7 @@ Origin (any plugin or main Claude)
              ├─ check all enabled PreToolUse subscriptions
              │     ├─ pikud-alerts-suite      → block-removing-reports.sh runs  ← exits 2, blocks
              │     ├─ tzevaadom-alerts-suite  → no PreToolUse subscription      ← nothing happens
-             │     └─ markdown-converter-suite → no PreToolUse subscription     ← nothing happens
+             │     └─ markdown-suite → no PreToolUse subscription     ← nothing happens
              └─ result: blocked
 ```
 
@@ -59,7 +59,7 @@ The day someone runs:
 /plugin disable pikud-alerts-suite@ai-agents-local
 ```
 
-…the guardrail silently disappears. The hook script still sits on disk; its subscription just isn't loaded into the session. Now `tzevaadom-alerts-suite`, `markdown-converter-suite`, and main Claude are all free to delete `reports/` with no warning. The protection didn't move; it isn't there.
+…the guardrail silently disappears. The hook script still sits on disk; its subscription just isn't loaded into the session. Now `tzevaadom-alerts-suite`, `markdown-suite`, and main Claude are all free to delete `reports/` with no warning. The protection didn't move; it isn't there.
 
 This is the "accidental dependency" trap: deletion-safety is conceptually independent of "do we care about Pikud alerts?", but they're now coupled in practice.
 

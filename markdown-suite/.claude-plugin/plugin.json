@@ -1,5 +1,5 @@
 {
-  "name": "markdown-converter-suite",
+  "name": "markdown-suite",
   "description": "Markdown converter workflow — agent, skill, and SessionStart hook bundled. Converts PDF/HTML files from converted-pdf-files/ to Markdown under converted-md-files/, preserving directory structure.",
   "version": "1.0.0",
   "author": {

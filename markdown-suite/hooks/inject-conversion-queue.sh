@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# SessionStart hook for markdown-converter-suite.
+# SessionStart hook for markdown-suite.
 #
 # Scans converted-pdf-files/ for *.pdf, *.html, *.htm and reports
 # how many of them still need to be converted (or re-converted because
@@ -71,7 +71,7 @@ Instructions for Claude:
 - If the user asks to process pending files, /convert-to-md with no arguments converts all of them.
 - /convert-to-md --list does a dry-run (prints the queue without converting).
 - /convert-to-md <glob> [--debug] processes a subset.
-- The markdown-converter agent and /convert-to-md skill are part of the markdown-converter-suite plugin."
+- The markdown-converter agent and /convert-to-md skill are part of the markdown-suite plugin."
 fi
 
 printf '{"hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":%s}}\n' \

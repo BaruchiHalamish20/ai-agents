@@ -11,7 +11,7 @@
 > **Time:** ~30 minutes if you follow the established naming and
 > layout from lessons 3–4; ~60 minutes if you deviate.
 > **You will touch:** a new top-level folder
-> `markdown-converter-suite/`, two new top-level folders
+> `markdown-suite/`, two new top-level folders
 > `converted-pdf-files/` and `converted-md-files/`, the
 > root marketplace at `.claude-plugin/marketplace.json`, and
 > `.claude/settings.json`'s `enabledPlugins` map. No new CLI
@@ -39,7 +39,7 @@ do not change at all.
 
 ### Architectural symmetry across the three plugins
 
-| Layer            | `pikud-alerts-suite`           | `tzevaadom-alerts-suite`              | `markdown-converter-suite`                            |
+| Layer            | `pikud-alerts-suite`           | `tzevaadom-alerts-suite`              | `markdown-suite`                            |
 |------------------|--------------------------------|---------------------------------------|-------------------------------------------------------|
 | Agent            | `pikud-alerts.md`              | `tzevaadom-alerts.md`                 | `markdown-converter.md`                                |
 | Skill            | `/alert-report`                | `/tzevaadom-report`                   | `/convert-to-md`                                       |
@@ -75,7 +75,7 @@ without crowding everything else out.
 
 ---
 
-## 2. Spec — the markdown-converter-suite contract
+## 2. Spec — the markdown-suite contract
 
 **Inputs:** Source files dropped under `converted-pdf-files/`.
 Supported extensions: `.pdf`, `.html`, `.htm` (case-insensitive).
@@ -116,7 +116,7 @@ converted-pdf-files/A Tale Of Two.HTM             → converted-md-files/A Tale 
 
 | Decision                                | Choice                                                | Why                                                                                                          |
 |-----------------------------------------|-------------------------------------------------------|--------------------------------------------------------------------------------------------------------------|
-| Plugin name                             | `markdown-converter-suite`                            | Parallel to `pikud-alerts-suite`, `tzevaadom-alerts-suite`. Identical naming pattern teaches the symmetry.   |
+| Plugin name                             | `markdown-suite`                            | Parallel to `pikud-alerts-suite`, `tzevaadom-alerts-suite`. Identical naming pattern teaches the symmetry.   |
 | Source folder                           | `converted-pdf-files/`                            | Verb-y name signals "queue".                                                                                  |
 | Destination folder                      | `converted-md-files/`                             | Past-participle name signals "done".                                                                          |
 | Conversion engine                       | LLM-based (Read + Write)                              | Self-contained, no binary install (no pandoc). Quality matters more than fidelity for our use case.          |
@@ -138,7 +138,7 @@ These are terse. By lesson 5 the moves should be familiar.
 ### Task 1 — Scaffold the plugin
 
 ```
-markdown-converter-suite/
+markdown-suite/
 ├── .claude-plugin/
 ├── agents/
 ├── hooks/
@@ -147,13 +147,13 @@ markdown-converter-suite/
 
 ### Task 2 — Manifest
 
-`markdown-converter-suite/.claude-plugin/plugin.json` — same shape as
+`markdown-suite/.claude-plugin/plugin.json` — same shape as
 the other two plugins. Keywords: `markdown`, `converter`, `pdf`,
 `html`, `documents`. Version `1.0.0`.
 
 ### Task 3 — Agent
 
-`markdown-converter-suite/agents/markdown-converter.md`.
+`markdown-suite/agents/markdown-converter.md`.
 
 Key contract points:
 - Input parameters: `source_path` (required), `debug` (optional).
@@ -170,7 +170,7 @@ overrides, mirroring the other plugins' NOTES files.
 
 ### Task 4 — Skill
 
-`markdown-converter-suite/skills/convert-to-md/SKILL.md`.
+`markdown-suite/skills/convert-to-md/SKILL.md`.
 
 Key contract points:
 - Argument: `[pattern] [--list] [--debug]`.
@@ -194,7 +194,7 @@ Key contract points:
 
 ### Task 5 — Hook script
 
-`markdown-converter-suite/hooks/inject-conversion-queue.sh`.
+`markdown-suite/hooks/inject-conversion-queue.sh`.
 
 Mirrors the structure of the other two SessionStart hooks. The body
 that differs:
@@ -216,8 +216,8 @@ third entry under `plugins`:
 
 ```json
 {
-  "name": "markdown-converter-suite",
-  "source": "./markdown-converter-suite",
+  "name": "markdown-suite",
+  "source": "./markdown-suite",
   "description": "PDF/HTML to Markdown batch converter — agent (single-file worker) + skill (batch orchestrator) + SessionStart hook (conversion queue status)."
 }
 ```
@@ -225,7 +225,7 @@ third entry under `plugins`:
 Update `.claude/settings.json`'s `enabledPlugins`:
 
 ```json
-"markdown-converter-suite@ai-agents-local": true
+"markdown-suite@ai-agents-local": true
 ```
 
 No new CLI commands. Next time you start Claude Code in this
@@ -263,22 +263,22 @@ Verify:
 
 ## 5. Verification checklist
 
-- [ ] `markdown-converter-suite/.claude-plugin/plugin.json` parses
+- [ ] `markdown-suite/.claude-plugin/plugin.json` parses
       as valid JSON with non-empty `name`, `version`, `description`.
-- [ ] `markdown-converter-suite/agents/markdown-converter.md` has
+- [ ] `markdown-suite/agents/markdown-converter.md` has
       the required frontmatter and refuses to write outside
       `converted-md-files/`.
-- [ ] `markdown-converter-suite/skills/convert-to-md/SKILL.md` is
+- [ ] `markdown-suite/skills/convert-to-md/SKILL.md` is
       callable as `/convert-to-md` from a fresh Claude Code session.
-- [ ] `markdown-converter-suite/hooks/hooks.json` points at
+- [ ] `markdown-suite/hooks/hooks.json` points at
       `${CLAUDE_PLUGIN_ROOT}/hooks/inject-conversion-queue.sh`.
-- [ ] `markdown-converter-suite/hooks/inject-conversion-queue.sh`
+- [ ] `markdown-suite/hooks/inject-conversion-queue.sh`
       is executable, returns valid JSON on stdout, and appends a
       line containing `inject-conversion-queue fired` to
       `.claude/hooks/.audit.log` on every session start.
 - [ ] `.claude-plugin/marketplace.json` lists three plugins:
       pikud-alerts-suite, tzevaadom-alerts-suite,
-      markdown-converter-suite.
+      markdown-suite.
 - [ ] `.claude/settings.json`'s `enabledPlugins` has all three
       entries set to `true`.
 - [ ] A fresh session opens with Claude aware of: the pikud alert

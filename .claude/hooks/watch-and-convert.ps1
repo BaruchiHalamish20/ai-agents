@@ -4,7 +4,7 @@
 # `claude -p` (headless).
 #
 #   to-convert-word-files/   -> /word-to-pdf-suite:convert-to-pdf
-#   converted-pdf-files/     -> /markdown-converter-suite:convert-to-md
+#   converted-pdf-files/     -> /markdown-suite:convert-to-md
 #
 # Designed to run as a Windows scheduled task at logon. See
 # install-watcher-task.ps1 for registration.
@@ -37,7 +37,7 @@ $watchers = @(
         Key        = 'pdf'
         Folder     = Join-Path $ProjectRoot 'converted-pdf-files'
         Extensions = @('.pdf', '.html', '.htm')
-        Skill      = '/markdown-converter-suite:convert-to-md'
+        Skill      = '/markdown-suite:convert-to-md'
         Sentinel   = Join-Path $SentinelDir 'pdf.sentinel'
     }
 )

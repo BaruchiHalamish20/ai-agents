@@ -73,7 +73,7 @@ This lesson is **plugin-scoped**. The constitution governs the plugin catalog, n
 
 ### Act 1 — Marketplace
 
-**Inputs:** the three plugins from lesson 4 (`pikud-alerts-suite`, `tzevaadom-alerts-suite`, `markdown-converter-suite`), already at the repo root.
+**Inputs:** the three plugins from lesson 4 (`pikud-alerts-suite`, `tzevaadom-alerts-suite`, `markdown-suite`), already at the repo root.
 
 **Outputs:**
 - `.claude-plugin/marketplace.json` at the repo root listing all three.
@@ -161,8 +161,8 @@ Create `.claude-plugin/marketplace.json`:
       "keywords": ["tzeva-adom", "alerts", "israel"]
     },
     {
-      "name": "markdown-converter-suite",
-      "source": "./markdown-converter-suite",
+      "name": "markdown-suite",
+      "source": "./markdown-suite",
       "description": "PDF → Markdown conversion plugin with SessionStart conversion-queue notification.",
       "version": "1.0.0",
       "keywords": ["pdf", "markdown", "context", "rag-prep"]
@@ -203,7 +203,7 @@ You already have `extraKnownMarketplaces` and `enabledPlugins` set in `.claude/s
 /plugin marketplace add .
 /plugin install pikud-alerts-suite@ai-agents-local
 /plugin install tzevaadom-alerts-suite@ai-agents-local
-/plugin install markdown-converter-suite@ai-agents-local
+/plugin install markdown-suite@ai-agents-local
 /plugin list
 ```
 
@@ -231,7 +231,7 @@ Confirm `.claude/settings.json` already has the bootstrap entries from your less
 "enabledPlugins": {
   "pikud-alerts-suite@ai-agents-local": true,
   "tzevaadom-alerts-suite@ai-agents-local": true,
-  "markdown-converter-suite@ai-agents-local": true
+  "markdown-suite@ai-agents-local": true
 }
 ```
 
@@ -439,7 +439,7 @@ emits a Sources section in every report (passes).
 |----------------------------|------------------|------------------------------------------------|----------------------------|
 | `pikud-alerts-suite`       | I, II, III, IV, V, VI, VII | Article V — cross-plugin guardrail documented in README | — |
 | `tzevaadom-alerts-suite`   | (to be audited)  | (to be audited)                                | (to be audited)            |
-| `markdown-converter-suite` | (to be audited)  | (to be audited)                                | (to be audited)            |
+| `markdown-suite` | (to be audited)  | (to be audited)                                | (to be audited)            |
 
 Future audits SHOULD be appended to this table, not overwritten —
 constitutional compliance is a journal, not a snapshot.
@@ -447,7 +447,7 @@ constitutional compliance is a journal, not a snapshot.
 
 #### Task 7 — Audit the existing plugins
 
-For each of `tzevaadom-alerts-suite` and `markdown-converter-suite`, walk through the seven articles and fill in the audit table. The structured process:
+For each of `tzevaadom-alerts-suite` and `markdown-suite`, walk through the seven articles and fill in the audit table. The structured process:
 
 1. **Article I — Naming.** Read the folder name. Pass / deviate / fail.
 2. **Article II — Required components.** Check for `plugin.json` (required fields), `README.md` (three sections). Most likely fail point: missing README. *That's a fix.*
@@ -461,7 +461,7 @@ For each of `tzevaadom-alerts-suite` and `markdown-converter-suite`, walk throug
 
 For the most consequential audit finding, do one of:
 
-- **Fix:** apply the change to the plugin so it passes the article. Most likely candidate: add a `README.md` to `tzevaadom-alerts-suite` and `markdown-converter-suite` if they don't have one yet.
+- **Fix:** apply the change to the plugin so it passes the article. Most likely candidate: add a `README.md` to `tzevaadom-alerts-suite` and `markdown-suite` if they don't have one yet.
 - **Document deviation:** edit the plugin's `README.md` to acknowledge the deviation, the rationale, and the conditions under which the deviation would be revisited. Update the audit table to mark it as "deviation (documented)."
 - **Defer:** if the finding is real but not actionable today, add it to the audit table as "must-fix" with a TODO date.
 

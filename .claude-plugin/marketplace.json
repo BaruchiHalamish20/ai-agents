@@ -21,8 +21,8 @@
       "keywords": ["tzeva-adom", "alerts", "israel"]
     },
     {
-      "name": "markdown-converter-suite",
-      "source": "./markdown-converter-suite",
+      "name": "markdown-suite",
+      "source": "./markdown-suite",
       "description": "PDF → Markdown conversion plugin with SessionStart conversion-queue notification.",
       "version": "1.0.0",
       "keywords": ["pdf", "markdown", "context", "rag-prep"]

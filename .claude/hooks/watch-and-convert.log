@@ -36,8 +36,8 @@
 2026-05-13 16:04:07     | `to-convert-word-files/Google certifications master document.docx` | `converted-pdf-files/Google certifications master document.pdf` | up-to-date |
 2026-05-13 16:04:07     
 2026-05-13 16:04:07     Nothing to convert. All PDFs are current.
-2026-05-13 16:04:07  -> firing /markdown-converter-suite:convert-to-md
-2026-05-13 16:10:46  <- done /markdown-converter-suite:convert-to-md (exit=0)
+2026-05-13 16:04:07  -> firing /markdown-suite:convert-to-md
+2026-05-13 16:10:46  <- done /markdown-suite:convert-to-md (exit=0)
 2026-05-13 16:10:46     The rate limit applies across models. Here's the current status:
 2026-05-13 16:10:46     
 2026-05-13 16:10:46     ---
