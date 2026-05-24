@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Code Course Summary</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --fg: #1a1a1a;
+    --muted: #555;
+    --accent: #2563eb;
+    --accent-soft: #eff6ff;
+    --border: #e5e7eb;
+    --code-bg: #f3f4f6;
+    --code-fg: #be185d;
+    --quote-bg: #f9fafb;
+    --quote-border: #d1d5db;
+    --table-stripe: #f9fafb;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f1115;
+      --fg: #e5e7eb;
+      --muted: #9ca3af;
+      --accent: #60a5fa;
+      --accent-soft: #1e293b;
+      --border: #374151;
+      --code-bg: #1f2937;
+      --code-fg: #f9a8d4;
+      --quote-bg: #1f2937;
+      --quote-border: #4b5563;
+      --table-stripe: #1a1d23;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    padding: 16px;
+    max-width: 760px;
+    margin-left: auto;
+    margin-right: auto;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--fg);
+    background: var(--bg);
+    word-wrap: break-word;
+  }
+  h1 {
+    font-size: 1.7rem;
+    margin: 0.5em 0 0.3em;
+    line-height: 1.2;
+    color: var(--accent);
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 0.3em;
+  }
+  h2 {
+    font-size: 1.35rem;
+    margin: 1.8em 0 0.5em;
+    color: var(--accent);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.2em;
+  }
+  h3 {
+    font-size: 1.1rem;
+    margin: 1.2em 0 0.4em;
+    color: var(--fg);
+  }
+  p { margin: 0.5em 0; }
+  ul, ol { padding-left: 1.4em; margin: 0.5em 0; }
+  li { margin: 0.3em 0; }
+  ul ul, ol ol, ul ol, ol ul { margin: 0.2em 0; }
+  strong { color: var(--fg); font-weight: 600; }
+  em { font-style: italic; color: var(--muted); }
+  blockquote {
+    margin: 1em 0;
+    padding: 0.6em 1em;
+    background: var(--quote-bg);
+    border-left: 4px solid var(--quote-border);
+    color: var(--muted);
+    font-style: italic;
+    border-radius: 4px;
+  }
+  code {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.88em;
+    background: var(--code-bg);
+    color: var(--code-fg);
+    padding: 0.15em 0.4em;
+    border-radius: 4px;
+    word-break: break-word;
+  }
+  pre {
+    background: var(--code-bg);
+    padding: 0.8em 1em;
+    border-radius: 6px;
+    overflow-x: auto;
+    font-size: 0.85em;
+    line-height: 1.45;
+    border: 1px solid var(--border);
+  }
+  pre code {
+    background: transparent;
+    color: var(--fg);
+    padding: 0;
+  }
+  hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 2em 0;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1em 0;
+    font-size: 0.92rem;
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  @media (min-width: 600px) {
+    table { display: table; white-space: normal; }
+  }
+  th, td {
+    text-align: left;
+    padding: 0.55em 0.75em;
+    border: 1px solid var(--border);
+    vertical-align: top;
+  }
+  th {
+    background: var(--accent-soft);
+    font-weight: 600;
+  }
+  tr:nth-child(even) td { background: var(--table-stripe); }
+  .arrow { color: var(--accent); font-weight: bold; }
+  .lead {
+    font-size: 0.95em;
+    color: var(--muted);
+    background: var(--accent-soft);
+    padding: 0.8em 1em;
+    border-radius: 6px;
+    border-left: 4px solid var(--accent);
+    margin: 1em 0 1.5em;
+  }
+  .toc {
+    background: var(--quote-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.8em 1em 0.8em 2.2em;
+    margin: 1em 0 2em;
+  }
+  .toc-title { font-weight: 600; color: var(--accent); margin-left: -1em; }
+  @media print {
+    body { max-width: 100%; padding: 0; font-size: 11pt; }
+    h2 { page-break-after: avoid; }
+    pre, table { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<h1>Course Summary — Key Points to Remember</h1>
+
+<div class="lead">
+Bullet-form digest of lessons 1–6. Main concepts only — no tasks, no commands. Read top-to-bottom in 5 minutes.
+</div>
+
+<div class="toc">
+  <div class="toc-title">Contents</div>
+  <ul>
+    <li><a href="#big-picture">The big picture</a></li>
+    <li><a href="#l1">Lesson 1 — Custom agents</a></li>
+    <li><a href="#l2">Lesson 2 — Skills</a></li>
+    <li><a href="#l3">Lesson 3 — Hooks, loops, schedules</a></li>
+    <li><a href="#l4">Lesson 4 — Plugins</a></li>
+    <li><a href="#l5">Lesson 5 — Patterns + Marketplace + Constitution</a></li>
+    <li><a href="#l6">Lesson 6 — Project-wide SDD constitution</a></li>
+    <li><a href="#mental-models">The 8 mental models</a></li>
+    <li><a href="#finops">FinOps — cost discipline</a></li>
+  </ul>
+</div>
+
+<hr>
+
+<h2 id="big-picture">The big picture (one-screen mental model)</h2>
+<ul>
+  <li><strong>Three trigger models</strong> cover every workflow:
+    <ul>
+      <li><strong>Model-triggered</strong> <span class="arrow">→</span> Agent</li>
+      <li><strong>User-triggered</strong> <span class="arrow">→</span> Skill</li>
+      <li><strong>System-triggered</strong> <span class="arrow">→</span> Hook / <code>/loop</code> / <code>/schedule</code> routine</li>
+    </ul>
+  </li>
+  <li><strong>Trilogy = the unit of work</strong>: agent + skill + hook (+ optional routine).</li>
+  <li><strong>Plugin</strong> = packaging the trilogy as one folder.</li>
+  <li><strong>Marketplace</strong> = catalog of plugins.</li>
+  <li><strong>Constitution</strong> = the rules above all of it.</li>
+</ul>
+
+<hr>
+
+<h2 id="l1">Lesson 1 — Custom agents</h2>
+<ul>
+  <li>An agent is <strong>just a Markdown file</strong> under <code>.claude/agents/&lt;name&gt;.md</code>.</li>
+  <li>Frontmatter = the contract: <code>name</code>, <code>description</code>, <code>tools</code>, <code>model</code>.</li>
+  <li>System prompt = the implementation; constraints belong there.</li>
+  <li>Runs in its <strong>own context window</strong>, isolated from main Claude.</li>
+  <li>Main Claude sees only the <strong>final return</strong>, not intermediate reasoning.</li>
+  <li><strong><code>description</code> quality decides if the agent gets used</strong> — vague = dead code.</li>
+  <li>Use an agent when: many tool calls, need second opinion, parallel work.</li>
+  <li>Don't use an agent when: quick answer, user wants to steer mid-flight.</li>
+</ul>
+
+<hr>
+
+<h2 id="l2">Lesson 2 — Skills (user-triggered)</h2>
+<ul>
+  <li>A skill is a <strong>folder</strong> at <code>.claude/skills/&lt;name&gt;/SKILL.md</code>.</li>
+  <li>Triggered by user typing <code>/&lt;skill-name&gt; &lt;args&gt;</code>.</li>
+  <li>Runs <strong>inline in the current session</strong> — every step visible, interruptible.</li>
+  <li><code>allowed-tools</code> <strong>grants</strong> access, does not restrict.</li>
+  <li><strong>Live reload</strong>: edit → re-run, no session restart.</li>
+  <li>Skill vs Agent:
+    <ul>
+      <li>Skill = user-triggered, inline, costs main-context tokens.</li>
+      <li>Agent = model-triggered, isolated, saves main-context (but still costs $$).</li>
+    </ul>
+  </li>
+  <li>Skill triggering is <strong>deterministic</strong> (user types it); agent triggering is <strong>probabilistic</strong> (model reads description).</li>
+</ul>
+
+<hr>
+
+<h2 id="l3">Lesson 3 — Hooks, loops, and schedules (system-triggered)</h2>
+<ul>
+  <li><strong>Hooks</strong> fire on Claude Code events (<code>SessionStart</code>, <code>PreToolUse</code>, etc.).</li>
+  <li><strong><code>/loop</code></strong> = local + short + ephemeral (1 min min, ≤ 7 days).</li>
+  <li><strong><code>/schedule</code> routine</strong> = cloud + long + persistent (1 hour min).</li>
+  <li>Decision rule:
+    <ul>
+      <li>Laptop closed? <span class="arrow">→</span> routine.</li>
+      <li>Active incident monitoring? <span class="arrow">→</span> <code>/loop</code>.</li>
+      <li>Reaction to Claude Code event? <span class="arrow">→</span> hook.</li>
+    </ul>
+  </li>
+  <li><strong>Honest limits to remember:</strong>
+    <ul>
+      <li>A hook <strong>cannot</strong> type into the conversation as the user.</li>
+      <li>It returns JSON: <code>additionalContext</code>, <code>updatedInput</code>, or exit-code-2 block.</li>
+      <li>A hook injecting data <strong>must</strong> include behavioral guidance ("don't re-fetch unless…") — otherwise Claude re-fetches anyway.</li>
+    </ul>
+  </li>
+  <li><strong>Routines are NOT in git</strong> — they live in your claude.ai account.</li>
+  <li>Three ways to manage routines: <code>/schedule</code>, web UI, HTTP API.</li>
+  <li>API is the only path treating routines as code.</li>
+</ul>
+
+<hr>
+
+<h2 id="l4">Lesson 4 — Plugins (packaging)</h2>
+<ul>
+  <li>A plugin is <strong>one folder</strong> with a manifest + components.</li>
+  <li>Layout:
+    <ul>
+      <li><strong>Only <code>plugin.json</code> goes inside <code>.claude-plugin/</code>.</strong></li>
+      <li>Everything else (<code>agents/</code>, <code>skills/</code>, <code>hooks/</code>) at the <strong>plugin root</strong>.</li>
+    </ul>
+  </li>
+  <li>Plugins introduce <strong>no new behaviors</strong> — just packaging + naming.</li>
+  <li><strong>Namespacing</strong> is the point: <code>/alert-report</code> <span class="arrow">→</span> <code>/pikud-alerts-suite:alert-report</code>.</li>
+  <li>Two environment variables to internalize:
+    <ul>
+      <li><code>${CLAUDE_PLUGIN_ROOT}</code> = code (overwritten on update).</li>
+      <li><code>${CLAUDE_PLUGIN_DATA}</code> = state (survives updates).</li>
+    </ul>
+  </li>
+  <li><strong>Plugin agents are live-reloadable</strong> via <code>/reload-plugins</code> — no restart.</li>
+  <li>Versioning:
+    <ul>
+      <li>Explicit semver → users update only when you bump.</li>
+      <li>Omit <code>version</code> → every commit treated as a release.</li>
+    </ul>
+  </li>
+  <li>Plugins CAN ship hooks at the plugin root (<code>hooks/hooks.json</code>) — that's normal.</li>
+  <li>But plugin-shipped <strong>agents</strong> cannot declare <code>hooks</code>, <code>mcpServers</code>, or <code>permissionMode</code> <em>inside their own frontmatter</em> (security: prevents an agent from smuggling permissions past the user). Standalone agents in <code>.claude/agents/</code> can.</li>
+</ul>
+
+<h3>Composition reveal (second plugin)</h3>
+<ul>
+  <li>Building a parallel plugin on a different data source proved:</li>
+  <li><strong>The data source is orthogonal to the orchestration.</strong></li>
+  <li>The cloud-routine 403 bug was in the upstream, not in any of the code.</li>
+</ul>
+
+<hr>
+
+<h2 id="l5">Lesson 5 — Patterns + Marketplace + Plugin constitution</h2>
+
+<h3>Third plugin (markdown-converter)</h3>
+<ul>
+  <li>Building on a different <em>domain</em> (document conversion) proved:</li>
+  <li><strong>The task is orthogonal to the architecture too.</strong></li>
+  <li>New pattern: <strong>orchestrator + worker</strong>
+    <ul>
+      <li>Skill = batch orchestrator (enumerates, dispatches).</li>
+      <li>Agent = per-file worker in isolated context.</li>
+    </ul>
+  </li>
+  <li>Generalizes to any batch: translation, code review, test gen, summarization.</li>
+  <li><strong>Right number of triggers = the number that match the task.</strong> Forcing cron on a human-triggered task is anti-pattern.</li>
+</ul>
+
+<h3>Marketplace</h3>
+<ul>
+  <li>A marketplace = <strong>one JSON file</strong> (<code>.claude-plugin/marketplace.json</code>).</li>
+  <li>No central authority, no approval gates — just a catalog.</li>
+  <li>Three management surfaces: <code>/plugin</code>, web UI, HTTP API.</li>
+  <li><strong>One-click team onboarding</strong> = <code>extraKnownMarketplaces</code> + <code>enabledPlugins</code> in <code>.claude/settings.json</code>.</li>
+</ul>
+
+<h3>Plugin-scoped constitution (7 articles)</h3>
+<ul>
+  <li>The platform enforces only JSON validity. Trust comes from rules <strong>you</strong> write.</li>
+  <li>Seven articles to govern the catalog:
+    <ol>
+      <li><strong>Naming</strong> — kebab-case, <code>-suite</code> suffix for bundles.</li>
+      <li><strong>Required components</strong> — <code>plugin.json</code>, <code>README.md</code>, "what hook does NOT do" section.</li>
+      <li><strong>Versioning</strong> — explicit semver, never diverge from marketplace entry.</li>
+      <li><strong>Paths and state</strong> — <code>${CLAUDE_PLUGIN_ROOT}</code> for code, <code>${CLAUDE_PLUGIN_DATA}</code> for state.</li>
+      <li><strong>Hooks and safety</strong> — <code>PreToolUse</code> needs matcher; blockers name themselves in stderr.</li>
+      <li><strong>Skills</strong> — validate args before any irreversible work; destructive opts-in.</li>
+      <li><strong>Agents</strong> — explicit <code>tools:</code>, emit <code>## Sources</code> in artifacts.</li>
+    </ol>
+  </li>
+  <li>The constitution is the <strong>missing middle</strong> between artifact and shipping.</li>
+</ul>
+
+<hr>
+
+<h2 id="l6">Lesson 6 — Project-wide SDD constitution</h2>
+
+<h3>The SDD hierarchy</h3>
+<pre><code>CONSTITUTION → SPEC → PLAN → TASKS → CODE</code></pre>
+<ul>
+  <li>Each layer forecloses a specific failure mode:
+    <ul>
+      <li><strong>Constitution</strong> — inconsistent standards across team.</li>
+      <li><strong>Spec</strong> — drift mid-work and re-litigation of scope.</li>
+      <li><strong>Plan</strong> — re-litigating decisions six months later.</li>
+      <li><strong>Tasks</strong> — work can't be paused/resumed.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3>CONSTITUTION.md ≠ CLAUDE.md</h3>
+<ul>
+  <li><strong>CLAUDE.md</strong> = how Claude behaves in a session.</li>
+  <li><strong>CONSTITUTION.md</strong> = how the team works.</li>
+  <li>Test: <em>"Does the rule change Claude's response in-session, or a human's PR review?"</em></li>
+  <li>The constitution must <strong>not</strong> be auto-loaded — one-line pointer from CLAUDE.md is enough.</li>
+</ul>
+
+<h3>Ten articles (the project bar)</h3>
+<ol>
+  <li><strong>SDD hierarchy</strong> — every non-trivial change must follow it.</li>
+  <li><strong>Specs</strong> — inputs/outputs/out-of-scope/success criteria, append-only.</li>
+  <li><strong>Plans</strong> — decisions table + alternatives rejected + order of operations.</li>
+  <li><strong>Tasks</strong> — one-commit-each, externally checkable, journal not backlog.</li>
+  <li><strong>Branches/commits</strong> — atomic, type-prefix, AI attribution trailer.</li>
+  <li><strong>PR review</strong> — must link to spec; reviewers check articles explicitly.</li>
+  <li><strong>Testing</strong> — test what can be tested; document manual verification for the rest.</li>
+  <li><strong>AI usage</strong> — human review before merge; AI is collaborator, not committer.</li>
+  <li><strong>Relation to CLAUDE.md</strong> — separation test from above.</li>
+  <li><strong>Amendments/audit</strong> — quarterly ritual; 3 deviations on one article → amend it.</li>
+</ol>
+
+<h3>Enforcement reality</h3>
+<ul>
+  <li><strong>Almost no automated enforcement out of the box.</strong></li>
+  <li>Articles enforced by: PR reviewers + amendment process + audit ritual.</li>
+  <li>Premature automation ossifies rules that haven't proven themselves.</li>
+</ul>
+
+<hr>
+
+<h2 id="mental-models">The 8 mental models to keep forever</h2>
+<ol>
+  <li><strong>Three trigger models cover everything</strong>: model, user, system.</li>
+  <li><strong>The trilogy is the unit of work</strong> — agent + skill + hook (+ routine).</li>
+  <li><strong>Data source and task are both orthogonal to the architecture</strong> — swap either, orchestration doesn't change.</li>
+  <li><strong>A plugin is packaging, not new behavior</strong> — exists for distribution and namespacing.</li>
+  <li><strong>Marketplaces are dumb catalogs</strong> — trust comes from your rules, not the platform.</li>
+  <li><strong>Constitutions are commitments, not documentation</strong> — PR review turns description into commitment.</li>
+  <li><strong>AI usage is a first-class concern</strong> — attribute it, review before merge.</li>
+  <li><strong>By the end, building a workflow is a checklist</strong> — first plugin: a week. Third plugin: 30 min.</li>
+</ol>
+
+<hr>
+
+<h2 id="finops">FinOps — cost discipline</h2>
+<blockquote>Read before shipping anything that runs unattended.</blockquote>
+
+<ul>
+  <li><strong>Agents are NOT free.</strong> Isolation saves your main context window, not your wallet — every agent turn is billed (its own system prompt + its own reasoning + its tools' outputs + the return).</li>
+  <li><strong>Skills are cheaper <em>per run</em> but pollute your main context</strong> — long skills push everything else out of the window, forcing summarization or session restarts later.</li>
+  <li><strong><code>/loop</code> is the easiest way to burn money silently.</strong> A 1-min interval × 24 hours = 1,440 runs/day. Always pick the longest interval that still works.</li>
+  <li><strong>Routines run in the Anthropic cloud and have their own bill</strong> — they don't show up in your local session counter. Treat them like a cron job on a server you're paying for.</li>
+  <li><strong>Prompt caching is free money.</strong> Stable system prompts (agents, skills) get cached automatically; reorder content so the changing parts come last to maximize cache hits.</li>
+  <li><strong>Hooks are nearly free</strong> — local shell scripts, no LLM call. Prefer a hook over an agent when the task is "read a file and inject context."</li>
+</ul>
+
+<h3>Model recommendations (decide at planning stage)</h3>
+<table>
+  <thead>
+    <tr><th>Stage / use case</th><th>Model</th><th>Why</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>Planning / architecture / spec writing</strong></td><td><strong>Opus</strong></td><td>Best reasoning. The plan you write here pays back 10× in execution.</td></tr>
+    <tr><td><strong>Multi-file implementation, code review</strong></td><td><strong>Sonnet</strong></td><td>Strong code quality at ~1/5 the price of Opus.</td></tr>
+    <tr><td><strong>Batch workers (per-file, per-row)</strong></td><td><strong>Haiku</strong></td><td>Fastest + cheapest. Sufficient for structured transforms.</td></tr>
+    <tr><td><strong>Scheduled routines / hourly digests</strong></td><td><strong>Haiku</strong></td><td>Runs unattended on a clock — keep each fire cheap.</td></tr>
+    <tr><td><strong>Agents that fetch + summarize</strong></td><td><strong>Haiku / Sonnet</strong></td><td>Most fetch-and-format agents don't need Opus.</td></tr>
+    <tr><td><strong>Hooks (context injection, etc.)</strong></td><td>n/a (shell)</td><td>Hooks are scripts, not LLM calls. Cost is ~zero.</td></tr>
+    <tr><td><strong>Final review / sign-off on AI code</strong></td><td><strong>Opus</strong> (or human)</td><td>Last line of defense. Worth the spend.</td></tr>
+  </tbody>
+</table>
+
+<h3>Cost-reduction bullets (apply at planning time)</h3>
+<ul>
+  <li><strong>Pick the model per artifact, not per project.</strong> Declare <code>model:</code> in the agent/skill frontmatter so the cheap ones don't accidentally inherit Opus.</li>
+  <li><strong>Use Plan mode (Opus) → switch to Sonnet/Haiku for implementation.</strong> Front-load thinking; back-load execution.</li>
+  <li><strong>Prefer the orchestrator + worker pattern</strong> for batches — each worker runs in a tight context with the cheapest model that does the job.</li>
+  <li><strong>Cap loop intervals</strong> — never <code>/loop 1m</code> for monitoring you could check hourly.</li>
+  <li><strong>Disable plugins you're not using</strong> via <code>enabledPlugins</code>. Every loaded plugin's hooks fire on session start, costing seconds and tokens.</li>
+  <li><strong>Keep agent system prompts short.</strong> Each token in the system prompt is re-read on every turn (unless cached).</li>
+  <li><strong>Audit token usage monthly</strong> — <code>claude /cost</code> shows the per-session breakdown; routines need to be checked separately in the claude.ai billing dashboard.</li>
+</ul>
+
+<hr>
+
+<p style="text-align: center; color: var(--muted); font-size: 0.85em; margin-top: 2em;">
+  RoiTeachme — Claude Code curriculum<br>
+  Lessons 1–6 distilled · Read-only digest
+</p>
+
+</body>
+</html>

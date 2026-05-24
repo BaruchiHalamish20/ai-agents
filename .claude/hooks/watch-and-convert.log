@@ -65,3 +65,6 @@
 2026-05-19 17:14:26  watcher armed: word on C:\softech\MaarachHadigital\roi-course\RoiTeachme\work\ai-agents\to-convert-word-files
 2026-05-19 17:14:26  watcher armed: pdf on C:\softech\MaarachHadigital\roi-course\RoiTeachme\work\ai-agents\converted-pdf-files
 2026-05-19 17:14:26  watcher service started (quiet=8s, tick=2s)
+2026-05-24 16:37:21  watcher armed: word on C:\softech\MaarachHadigital\roi-course\RoiTeachme\work\ai-agents\to-convert-word-files
+2026-05-24 16:37:21  watcher armed: pdf on C:\softech\MaarachHadigital\roi-course\RoiTeachme\work\ai-agents\converted-pdf-files
+2026-05-24 16:37:21  watcher service started (quiet=8s, tick=2s)
