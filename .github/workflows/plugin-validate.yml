@@ -1,0 +1,79 @@
+name: Plugin validate
+
+on:
+  pull_request:
+    paths:
+      - '.claude-plugin/**'
+      - '**/.claude-plugin/**'
+      - '**/plugin.json'
+      - '**/hooks.json'
+      - '**/SKILL.md'
+      - '**/agents/*.md'
+      - '.github/workflows/plugin-validate.yml'
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: claude plugin validate
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Claude Code CLI
+        # Pinned-floating: bump explicitly when the CLI ships a breaking
+        # change to `plugin validate`. Track releases at
+        # https://www.npmjs.com/package/@anthropic-ai/claude-code.
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Show CLI version
+        run: claude --version
+
+      - name: Validate marketplace (repo root)
+        # Mechanical checks per the plugin-scoped constitution: JSON
+        # validity, kebab-case names, required fields in plugin.json,
+        # marketplace consistency. See .claude-plugin/constitution.md.
+        run: claude plugin validate .
+
+      - name: Validate each plugin listed in marketplace.json
+        run: |
+          set -euo pipefail
+          sources=$(jq -r '.plugins[].source' .claude-plugin/marketplace.json)
+          status=0
+          while IFS= read -r src; do
+            [ -z "$src" ] && continue
+            echo "::group::Validate $src"
+            if ! claude plugin validate "$src"; then
+              echo "::error file=$src::plugin validate failed for $src"
+              status=1
+            fi
+            echo "::endgroup::"
+          done <<< "$sources"
+          exit $status
+
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo "## Plugin validate results"
+            echo ""
+            echo "Marketplace: \`.claude-plugin/marketplace.json\`"
+            echo ""
+            echo "Plugins validated:"
+            jq -r '.plugins[] | "- `\(.name)` → \(.source)"' .claude-plugin/marketplace.json
+            echo ""
+            echo "Constitution: [\`.claude-plugin/constitution.md\`](./.claude-plugin/constitution.md)"
+            echo ""
+            echo "For the semantic audit (per-article pass/deviation/fail), run \`/plugin-constitution-check <plugin>\` locally."
+          } >> "$GITHUB_STEP_SUMMARY"

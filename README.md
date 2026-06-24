@@ -41,6 +41,73 @@ By the end of the four lessons you will be able to:
 
 ---
 
+## Install the marketplace from GitHub
+
+This repo ships its own plugin catalog at `.claude-plugin/marketplace.json`
+(named `ai-agents-local`). You can register that catalog from a GitHub remote
+— no local clone needed — and install any of its plugins on demand.
+
+### One-time setup
+
+From any working directory, start Claude Code and run:
+
+```
+/plugin marketplace add BaruchiHalamish20/ai-agents
+/plugin install pikud-alerts-suite@ai-agents-local
+/plugin install tzevaadom-alerts-suite@ai-agents-local
+/plugin install markdown-suite@ai-agents-local
+/plugin install word-to-pdf-suite@ai-agents-local
+/plugin list
+```
+
+`/plugin marketplace add <owner>/<repo>` fetches `marketplace.json` from the
+default branch of the GitHub repo and registers it under the `name` field
+in that file (`ai-agents-local`). Every subsequent `/plugin install` uses
+that name — the GitHub source is invisible from that point on.
+
+### Verify the registration is actually GitHub-backed
+
+`/plugin` (no args) opens the picker TUI. Under the **Marketplaces** tab,
+the `ai-agents-local` entry's source line should read
+`BaruchiHalamish20/ai-agents`. If it shows a local filesystem path
+(e.g. `C:\…\ai-agents`), you have a residual directory-source registration
+from a previous local-path setup that's shadowing the GitHub one — marketplace
+names are unique, so the older registration wins silently. Fix:
+
+```
+/plugin marketplace remove ai-agents-local
+```
+
+…then remove any `extraKnownMarketplaces.ai-agents-local` block from
+`~/.claude/settings.json`, restart Claude Code, and re-run
+`/plugin marketplace add BaruchiHalamish20/ai-agents`.
+
+### Local-directory source (alternative)
+
+If you cloned this repo and want to point at the working copy instead
+(useful while iterating on the marketplace itself), `cd` into the repo and:
+
+```
+/plugin marketplace add .
+```
+
+The `marketplace.json` is byte-identical in both cases — only the registration
+transport changes (`directory` vs `github`).
+
+### Refresh after the manifest changes
+
+Editing `marketplace.json` and re-pushing does **not** auto-update existing
+installs. To pick up changes without uninstalling plugins:
+
+```
+/plugin marketplace update ai-agents-local
+```
+
+Avoid `/plugin marketplace remove` for refreshes — it uninstalls every plugin
+that came from the marketplace.
+
+---
+
 ## Lab map
 
 ```
